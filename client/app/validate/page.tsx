@@ -1,73 +1,75 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { AlertCircle, CheckCircle } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Navbar } from "@/components/navbar";
+import { AlertCircle, CheckCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import {
+  AnonymousProvider
+} from "../contractTemplate";
 
 export default function ValidatePage() {
-  // Add state for showing a dummy certificate by default
-  const [walletAddress, setWalletAddress] = useState("0x1a2b3c4d5e6f7g8h9i0j")
-  const [tokenId, setTokenId] = useState("12345")
-  const [ipfsHash, setIpfsHash] = useState("QmZ9...")
-  const [validationResult, setValidationResult] = useState<"valid" | "invalid" | "pending">("pending")
-  const [isValidating, setIsValidating] = useState(false)
+
+  const [walletAddress, setWalletAddress] = useState("0x1a2b3c4d5e6f7g8h9i0j");
+  const [tokenId, setTokenId] = useState("12345");
+  const [ipfsHash, setIpfsHash] = useState("QmZ9...");
+  const [validationResult, setValidationResult] = useState<
+    "valid" | "invalid" | "pending"
+  >("pending");
+  const [isValidating, setIsValidating] = useState(false);
   const [endorsements, setEndorsements] = useState([
     {
       id: "end-001",
-      name: "John Doe",
-      date: "November 2, 2023",
+      walletAddress: "",
     },
-    {
-      id: "end-002",
-      name: "Alice Smith",
-      date: "November 5, 2023",
-    },
-    {
-      id: "end-003",
-      name: "Robert Johnson",
-      date: "November 10, 2023",
-    },
-  ])
-  const [newEndorsement, setNewEndorsement] = useState("")
+  ]);
+  const [issuerName, setissuerName] = useState("");
+  const [certificate, setCertificate] = useState({
+    title: "Blockchain Developer Certification",
+    issuer: "Blockchain Academy",
+    issueDate: "October 15, 2023",
+  });
 
-  // Update the handleValidate function to always show the certificate for demo purposes
-  const handleValidate = () => {
-    setIsValidating(true)
-
-    // Always set to valid after a delay for demo purposes
-    setTimeout(() => {
-      setValidationResult("valid")
-      setIsValidating(false)
-    }, 1500)
-  }
-
-  // Add a function to handle adding new endorsements
-  const handleAddEndorsement = () => {
-    if (!newEndorsement.trim()) return
-
-    const newEndorsementObj = {
-      id: `end-${Date.now()}`,
-      name: "You",
-      avatar: "YO",
-      date: new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      comment: newEndorsement,
+  const handleValidate = async () => {
+    setIsValidating(true);
+    const contractProvider = await AnonymousProvider();
+  
+    try {
+      const contractVerified = await contractProvider.verifyCertificate(walletAddress, ipfsHash, tokenId);
+      setCertificate({
+        title: contractVerified.title,
+        issuer: contractVerified.issuer,
+        issueDate: contractVerified.issueDate
+      });
+  
+      const [issuerName, fetchedEndorsements] = await Promise.all([
+        contractProvider.getUserDetails(contractVerified.issuer),
+        contractProvider.getEndorsers(tokenId)
+      ]);
+  
+      setissuerName(issuerName);
+      setEndorsements(fetchedEndorsements);
+      
+      setValidationResult("valid");
+    } catch (error) {
+      console.error("Validation error:", error);
+      setValidationResult("invalid");
+    } finally {
+      setIsValidating(false);
     }
-
-    setEndorsements([...endorsements, newEndorsementObj])
-    setNewEndorsement("")
-  }
+  };
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -76,8 +78,12 @@ export default function ValidatePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/50 to-background"></div>
         <div className="max-w-4xl mx-auto space-y-8 relative z-10">
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Certificate Validation</h1>
-            <p className="text-muted-foreground">Verify the authenticity of any NFT certificate on the blockchain</p>
+            <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+              Certificate Validation
+            </h1>
+            <p className="text-muted-foreground">
+              Verify the authenticity of any NFT certificate on the blockchain
+            </p>
           </div>
 
           <Card className="border-border/60 bg-card/60 backdrop-blur">
@@ -85,7 +91,10 @@ export default function ValidatePage() {
             <div className="relative rounded-xl overflow-hidden">
               <CardHeader>
                 <CardTitle>Validate Certificate</CardTitle>
-                <CardDescription>Enter at least one of the following details to validate a certificate</CardDescription>
+                <CardDescription>
+                  Enter at least one of the following details to validate a
+                  certificate
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -117,7 +126,9 @@ export default function ValidatePage() {
                 </div>
                 <Button
                   onClick={handleValidate}
-                  disabled={(!walletAddress && !tokenId && !ipfsHash) || isValidating}
+                  disabled={
+                    (!walletAddress && !tokenId && !ipfsHash) || isValidating
+                  }
                   className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
                 >
                   {isValidating ? "Validating..." : "Validate Certificate"}
@@ -132,7 +143,8 @@ export default function ValidatePage() {
                 <CheckCircle className="h-4 w-4" />
                 <AlertTitle>Valid Certificate</AlertTitle>
                 <AlertDescription>
-                  This certificate has been verified on the blockchain and is authentic.
+                  This certificate has been verified on the blockchain and is
+                  authentic.
                 </AlertDescription>
               </Alert>
 
@@ -152,34 +164,55 @@ export default function ValidatePage() {
                       </div>
                       <div className="md:w-2/3 space-y-4">
                         <div>
-                          <Badge className="mb-2 bg-gradient-to-r from-purple-500 to-blue-500">Verified</Badge>
-                          <h2 className="text-2xl font-bold">Blockchain Developer Certification</h2>
-                          <p className="text-muted-foreground">Issued on October 15, 2023</p>
+                          <Badge className="mb-2 bg-gradient-to-r from-purple-500 to-blue-500">
+                            Verified
+                          </Badge>
+                          <h2 className="text-2xl font-bold">
+                            {certificate.title}
+                          </h2>
+                          <p className="text-muted-foreground">
+                            Issued on {certificate.issueDate}
+                          </p>
                         </div>
 
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Issuer</span>
-                            <span className="font-medium">Blockchain Academy</span>
+                            <span className="text-muted-foreground">
+                              Issuer
+                            </span>
+                            <span className="font-medium">{issuerName}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Issuer Wallet Address</span>
-                            <span className="font-medium">0x1a2b...9i0j</span>
+                            <span className="text-muted-foreground">
+                              Issuer Wallet Address
+                            </span>
+                            <span className="font-medium">
+                              {certificate.issuer}
+                            </span>
                           </div>
                         </div>
 
                         <div className="pt-4 border-t border-border/40">
-                          <h3 className="text-lg font-semibold mb-2">Endorsements</h3>
+                          <h3 className="text-lg font-semibold mb-2">
+                            Endorsements
+                          </h3>
                           <div className="space-y-3">
-                            {endorsements.map((endorsement) => (
-                              <div className="flex items-start gap-3" key={endorsement.id}>
-
-                                <div>
-                                  <div className="font-normal">{endorsement.name}</div>
+                            {endorsements.length > 0 ? (
+                              endorsements.map((walletAddress, index) => (
+                                <div
+                                  className="flex items-start gap-3"
+                                  key={index}
+                                >
+                                  <div className="font-normal">
+                                    {walletAddress}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
-                           
+                              ))
+                            ) : (
+                              <p className="text-muted-foreground">
+                                No endorsements yet.
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -195,13 +228,13 @@ export default function ValidatePage() {
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Invalid Certificate</AlertTitle>
               <AlertDescription>
-                We couldn't verify this certificate on the blockchain. Please check the details and try again.
+                We couldn't verify this certificate on the blockchain. Please
+                check the details and try again.
               </AlertDescription>
             </Alert>
           )}
         </div>
       </main>
     </div>
-  )
+  );
 }
-

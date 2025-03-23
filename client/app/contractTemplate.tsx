@@ -30,4 +30,24 @@ const initializeContract = async (userWallet: string) => {
     }
 };
 
-export { contractProvider, contractSigner, initializeContract };
+const AnonymousProvider = async () => {
+    if (typeof window === "undefined") {
+        console.error("Window is not available in SSR");
+        return;
+    }
+
+    if (!window.ethereum) {
+        console.error("Ethereum provider not found");
+        return;
+    }
+    try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        contractProvider = new ethers.Contract(contractAddress, contractABI, provider);
+        return contractProvider;
+
+    } catch (error) {
+        console.error("Error initializing contract:", error);
+    }
+}
+
+export { contractProvider, contractSigner, initializeContract, AnonymousProvider };
