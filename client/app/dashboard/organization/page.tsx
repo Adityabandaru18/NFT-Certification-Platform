@@ -1,0 +1,158 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { DashboardLayout } from "@/components/dashboard-layout";
+import { CertificateCard } from "@/components/certificate-card";
+import { Filter, Upload } from "lucide-react";
+
+interface Certificate {
+  id: string;
+  title: string;
+  recipient: string;
+  issueDate: string;
+  image: string;
+  tokenId: string;
+  cid?: string; // Pinata CID (optional)
+  endorsements: { id: string; name: string; avatar: string }[];
+}
+
+const initialCertificates: Certificate[] = [
+  {
+    id: "cert-001",
+    title: "Blockchain Developer Certification",
+    recipient: "0x1a2b3c4d5e6f7g8h9i0j",
+    issueDate: "2023-10-15",
+    image: "/placeholder.svg",
+    tokenId: "12345",
+    endorsements: [{ id: "end-001", name: "John Doe", avatar: "JD" }],
+  },
+];
+
+export default function OrganizationDashboard() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [certificates, setCertificates] = useState<Certificate[]>(initialCertificates);
+  const [newCertificate, setNewCertificate] = useState({
+    title: "",
+    recipient: "",
+    description: "",
+    file: null as File | null,
+  });
+  const [uploading, setUploading] = useState(false);
+
+  const uploadToPinata = async () => {
+    if (!newCertificate.file) {
+      alert("Please upload an image.");
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", newCertificate.file);
+
+      const pinataMetadata = JSON.stringify({ name: newCertificate.title });
+      formData.append("pinataMetadata", pinataMetadata);
+
+      const pinataOptions = JSON.stringify({ cidVersion: 1 });
+      formData.append("pinataOptions", pinataOptions);
+
+      const pinataResponse = await fetch(process.env.NEXT_PUBLIC_PINATA_UPLOAD_URL!, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY}`,
+        },
+        body: formData,
+      });
+
+      const pinataData = await pinataResponse.json();
+      if (!pinataData.IpfsHash) throw new Error("Pinata upload failed.");
+
+      const cid = pinataData.IpfsHash;
+
+      const newCert: Certificate = {
+        id: `cert-${certificates.length + 1}`,
+        title: newCertificate.title,
+        recipient: newCertificate.recipient,
+        issueDate: new Date().toISOString().split("T")[0],
+        image: `https://gateway.pinata.cloud/ipfs/${cid}`,
+        tokenId: (12345 + certificates.length).toString(),
+        cid,
+        endorsements: [],
+      };
+
+      setCertificates([...certificates, newCert]);
+      alert("Certificate successfully uploaded to Pinata!");
+
+    } catch (error) {
+      console.error("Error uploading to Pinata:", error);
+      alert("Failed to upload certificate.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <DashboardLayout>
+      <div className="flex flex-col gap-6">
+        <h1 className="text-3xl font-bold">Organization Dashboard</h1>
+        <p className="text-muted-foreground">Manage and issue NFT certificates</p>
+
+        <Tabs defaultValue="issue">
+          
+          <TabsContent value="issue">
+            <Card>
+              <CardHeader>
+                <CardTitle>Issue New Certificate</CardTitle>
+                <CardDescription>Mint a new NFT certificate</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label>Certificate Title</Label>
+                  <Input
+                    placeholder="e.g. Blockchain Developer"
+                    onChange={(e) => setNewCertificate({ ...newCertificate, title: e.target.value })}
+                  />
+
+                  <Label>Recipient Wallet Address</Label>
+                  <Input
+                    placeholder="0x..."
+                    onChange={(e) => setNewCertificate({ ...newCertificate, recipient: e.target.value })}
+                  />
+
+                  <Label>Description</Label>
+                  <Textarea
+                    placeholder="Describe the certificate..."
+                    onChange={(e) => setNewCertificate({ ...newCertificate, description: e.target.value })}
+                  />
+
+                  <Label>Certificate Image</Label>
+                  <div className="border-dashed border-2 p-4 flex items-center">
+                    <Upload className="mr-2" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setNewCertificate({ ...newCertificate, file: e.target.files?.[0] || null })}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button onClick={uploadToPinata} disabled={uploading} className="w-full">
+                  {uploading ? "Uploading..." : "Mint Certificate"}
+                </Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </DashboardLayout>
+  );
+}
