@@ -64,7 +64,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/logout">
+                    <Link href="/">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Logout</span>
                     </Link>
