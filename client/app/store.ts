@@ -6,7 +6,9 @@ interface Main {
   wallet: string;
   addWallet: (wallet: string) => void;
   getWallet: () => string;
-
+  role: number;
+  addRole: (role: number) => void;
+  getRole: () => number;
 }
 
 const useStore = create<Main>()(
@@ -18,6 +20,12 @@ const useStore = create<Main>()(
         set({ wallet });
       },
       getWallet: () => get().wallet,
+
+      role: 0,
+      addRole: (role) => {
+        set({role});
+      },
+      getRole: () => get().role,
     }),
     {
       name: "user-storage", 

@@ -53,7 +53,7 @@ export default function LoginPage() {
   const [showWaitingModal, setShowWaitingModal] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useRouter();
-  const { addWallet } = useStore();
+  const { addWallet, addRole } = useStore();
 
   useEffect(() => {
     checkConnected();
@@ -126,7 +126,6 @@ export default function LoginPage() {
         console.log(Role);
         new_role = Number(Role);
         console.log("Role: ", new_role);
-        addWallet(currentSelected);
       } catch (error) {
         console.error("Error connecting with selected account:", error);
       }
@@ -140,12 +139,14 @@ export default function LoginPage() {
 
 
     // Navigate based on role
+    addWallet(currentSelected);
+    addRole(new_role);
     if (new_role == 0) {
       navigate.push("/signup");  // Stranger
     } else if (new_role == 1) {
       navigate.push("/dashboard/user");
     } else if (new_role == 2) {
-      navigate.push('/dashboard/organization') // VerifierPending
+      navigate.push('/dashboard/organization');
     } 
     else {
       navigate.push("/signup");
