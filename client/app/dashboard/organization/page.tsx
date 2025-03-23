@@ -54,10 +54,12 @@ export default function OrganizationDashboard() {
       const pinataResponse = await fetch(process.env.NEXT_PUBLIC_PINATA_UPLOAD_URL!, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY}`,
+          "pinata_api_key": process.env.NEXT_PUBLIC_PINATA_API_KEY ?? "",
+          "pinata_secret_api_key": process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY ?? "",
         },
         body: formData,
       });
+      
       console.log(pinataResponse);
       const pinataData = await pinataResponse.json();
       console.log(pinataData);
