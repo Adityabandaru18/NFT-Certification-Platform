@@ -232,9 +232,7 @@ export default function UserDashboard() {
     setIsSearching(true)
     setSuccessMessage(null)
 
-    // Simulate API call with our dummy data
     setTimeout(() => {
-      // Check if we have dummy data for this wallet
       if (walletSearchResults[walletSearch]) {
         setSearchResults(walletSearchResults[walletSearch])
       } else if (walletSearch.startsWith("0x")) {
@@ -245,7 +243,7 @@ export default function UserDashboard() {
             title: "Generic Blockchain Certificate",
             issuer: "Blockchain Foundation",
             issueDate: "2023-12-01",
-            image: "/placeholder.svg?height=400&width=300",
+            image: "/1.jpg",
             tokenId: "99999",
             recipient: walletSearch,
             endorsements: [],

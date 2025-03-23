@@ -38,7 +38,7 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
     issuer: "Blockchain Academy",
     recipient: "0x1a2b3c4d5e6f7g8h9i0j",
     issueDate: "October 15, 2023",
-    image: "/placeholder.svg?height=400&width=300",
+    image: "/1.jpg",
     tokenId: "12345",
     contract: "0xabc...789",
     ipfsHash: "QmZ9...",
