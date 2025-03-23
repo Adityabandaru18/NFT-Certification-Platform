@@ -40,21 +40,21 @@ export function Navbar() {
         <div className="md:hidden border-t border-border/40">
           <div className="container py-4 flex flex-col gap-4">
             <Link
-              href="/about"
+              href="/"
               className="text-sm font-medium py-2 text-muted-foreground transition-colors hover:text-foreground"
               onClick={() => setIsMenuOpen(false)}
             >
               About
             </Link>
             <Link
-              href="/features"
+              href="/"
               className="text-sm font-medium py-2 text-muted-foreground transition-colors hover:text-foreground"
               onClick={() => setIsMenuOpen(false)}
             >
               Features
             </Link>
             <Link
-              href="/pricing"
+              href="/"
               className="text-sm font-medium py-2 text-muted-foreground transition-colors hover:text-foreground"
               onClick={() => setIsMenuOpen(false)}
             >
