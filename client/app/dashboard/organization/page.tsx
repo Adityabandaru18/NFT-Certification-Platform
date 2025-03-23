@@ -11,37 +11,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { CertificateCard } from "@/components/certificate-card";
 import { Filter, Upload } from "lucide-react";
+import useStore from "@/app/store";
+import { contractSigner, initializeContract } from "../../contractTemplate";
 
 interface Certificate {
-  id: string;
   title: string;
   recipient: string;
-  issueDate: string;
-  image: string;
+  issuer: string;
   tokenId: string;
   cid?: string; // Pinata CID (optional)
-  endorsements: { id: string; name: string; avatar: string }[];
 }
 
-const initialCertificates: Certificate[] = [
-  {
-    id: "cert-001",
-    title: "Blockchain Developer Certification",
-    recipient: "0x1a2b3c4d5e6f7g8h9i0j",
-    issueDate: "2023-10-15",
-    image: "/placeholder.svg",
-    tokenId: "12345",
-    endorsements: [{ id: "end-001", name: "John Doe", avatar: "JD" }],
-  },
-];
 
 export default function OrganizationDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [certificates, setCertificates] = useState<Certificate[]>(initialCertificates);
+  const {getWallet} = useStore();
   const [newCertificate, setNewCertificate] = useState({
     title: "",
     recipient: "",
-    description: "",
     file: null as File | null,
   });
   const [uploading, setUploading] = useState(false);
@@ -71,24 +58,26 @@ export default function OrganizationDashboard() {
         },
         body: formData,
       });
-
+      console.log(pinataResponse);
       const pinataData = await pinataResponse.json();
+      console.log(pinataData);
       if (!pinataData.IpfsHash) throw new Error("Pinata upload failed.");
-
       const cid = pinataData.IpfsHash;
-
+      let tokenId = '';
+      await initializeContract(getWallet());
+      try {
+        tokenId = await contractSigner.mintCertificate(newCertificate.recipient, newCertificate.title, cid);
+      }
+      catch(e) {
+        return ;
+      }
       const newCert: Certificate = {
-        id: `cert-${certificates.length + 1}`,
         title: newCertificate.title,
         recipient: newCertificate.recipient,
-        issueDate: new Date().toISOString().split("T")[0],
-        image: `https://gateway.pinata.cloud/ipfs/${cid}`,
-        tokenId: (12345 + certificates.length).toString(),
-        cid,
-        endorsements: [],
+        tokenId,
+        issuer: getWallet(),
+        cid
       };
-
-      setCertificates([...certificates, newCert]);
       alert("Certificate successfully uploaded to Pinata!");
 
     } catch (error) {
@@ -125,12 +114,6 @@ export default function OrganizationDashboard() {
                   <Input
                     placeholder="0x..."
                     onChange={(e) => setNewCertificate({ ...newCertificate, recipient: e.target.value })}
-                  />
-
-                  <Label>Description</Label>
-                  <Textarea
-                    placeholder="Describe the certificate..."
-                    onChange={(e) => setNewCertificate({ ...newCertificate, description: e.target.value })}
                   />
 
                   <Label>Certificate Image</Label>
