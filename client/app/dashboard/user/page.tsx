@@ -330,7 +330,7 @@ export default function UserDashboard() {
 
   useEffect( ()=>{
      fetchCertificates();
-  });
+  }, []);
 
   const fetchCertificates = async () => {
     try{
