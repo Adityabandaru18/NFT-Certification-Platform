@@ -121,10 +121,11 @@ contract NFTCertificatePlatform {
         return certificateEndorsements[_tokenId];
     }
 
-    function verifyCertificate(address _owner, string memory _ipfsHash, bytes32 _tokenId) external view returns (bool) {
+    function verifyCertificate(address _owner, string memory _ipfsHash, bytes32 _tokenId) external view returns (Certificate memory) {
         require(_owner != address(0), "Owner must be set");
         require(certificates[_tokenId].owner == _owner, "Certificate does not exist for the provided owner");
-        return keccak256(abi.encodePacked(_ipfsHash)) == keccak256(abi.encodePacked(certificates[_tokenId].ipfsHash));
+        require(keccak256(abi.encodePacked(_ipfsHash)) == keccak256(abi.encodePacked(certificates[_tokenId].ipfsHash)), "Certificate IPFS and TokenID mismatch");
+        return certificates[_tokenId];
     }
     function getRole() external view returns (Role) {
         return roles[msg.sender];
