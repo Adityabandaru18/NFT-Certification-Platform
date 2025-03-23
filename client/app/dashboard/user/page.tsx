@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+
 // Dummy user accounts for demonstration
 const dummyUsers = [
   { id: "user-001", name: "John Doe", avatar: "JD", walletAddress: "0x1a2b3c4d5e6f7g8h9i0j" },
@@ -404,8 +405,8 @@ export default function UserDashboard() {
           </TabsContent>
 
           <TabsContent value="search" className="space-y-6">
-            <Card className="border-border/60 bg-card/60 backdrop-blur">
-              <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 blur-sm"></div>
+            <Card className="border-border/60 bg-card/60 backdrop-blur relative">
+              <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 blur-sm z-[-1]"></div>
               <div className="relative rounded-xl overflow-hidden">
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row gap-4">
@@ -419,28 +420,11 @@ export default function UserDashboard() {
                     <Button
                       onClick={handleWalletSearch}
                       disabled={!walletSearch || isSearching}
-                      className="bg-gradient-to-r from-purple-500 to-blue-500"
+                      className="bg-gradient-to-r from-purple-500 to-blue-500 z-10"
                     >
                       {isSearching ? "Searching..." : "Search"}
                     </Button>
                   </div>
-                  {/* <div className="mt-4 text-sm text-muted-foreground">
-                    <p>Try searching these demo wallet addresses:</p>
-                    <ul className="list-disc pl-5 mt-1 space-y-1">
-                      <li>
-                        <code className="bg-muted px-1 py-0.5 rounded">0x1a2b3c4d5e6f7g8h9i0j</code> - John Doe (2
-                        certificates, 1 without endorsements)
-                      </li>
-                      <li>
-                        <code className="bg-muted px-1 py-0.5 rounded">0x2b3c4d5e6f7g8h9i0j1a</code> - Alice Smith (1
-                        certificate with 1 endorsement)
-                      </li>
-                      <li>
-                        <code className="bg-muted px-1 py-0.5 rounded">0x3c4d5e6f7g8h9i0j1a2b</code> - Robert Johnson (1
-                        certificate with many endorsements)
-                      </li>
-                    </ul>
-                  </div> */}
                 </CardContent>
               </div>
             </Card>
@@ -466,8 +450,8 @@ export default function UserDashboard() {
 
                 <div className="space-y-4">
                   {searchResults.map((certificate) => (
-                    <Card key={certificate.id} className="overflow-hidden transition-all group">
-                      <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 transition-opacity group-hover:opacity-100 blur-sm"></div>
+                    <Card key={certificate.id} className="overflow-hidden transition-all group relative">
+                      <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 transition-opacity group-hover:opacity-100 blur-sm z-[-1]"></div>
                       <div className="relative rounded-xl overflow-hidden">
                         <CardContent className="p-0">
                           <div className="flex flex-col md:flex-row">
@@ -530,7 +514,7 @@ export default function UserDashboard() {
                                               View all
                                             </Button>
                                           </DialogTrigger>
-                                          <DialogContent>
+                                          <DialogContent className="z-50">
                                             <DialogHeader>
                                               <DialogTitle>All Endorsements</DialogTitle>
                                               <DialogDescription>
@@ -568,7 +552,7 @@ export default function UserDashboard() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="gap-1"
+                                  className="gap-1 z-10"
                                   onClick={() => handleQuickEndorse(certificate.id)}
                                 >
                                   <ThumbsUp className="h-4 w-4" />
@@ -577,12 +561,12 @@ export default function UserDashboard() {
 
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button variant="outline" size="sm" className="gap-1">
+                                    <Button variant="outline" size="sm" className="gap-1 z-10">
                                       <MessageSquare className="h-4 w-4" />
                                       <span>Add Comment</span>
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent>
+                                  <DialogContent className="z-50">
                                     <DialogHeader>
                                       <DialogTitle>Endorse Certificate</DialogTitle>
                                       <DialogDescription>
@@ -612,7 +596,7 @@ export default function UserDashboard() {
                                   </DialogContent>
                                 </Dialog>
 
-                                <Button variant="outline" size="sm" asChild className="ml-auto">
+                                <Button variant="outline" size="sm" asChild className="ml-auto z-10">
                                   <Link href={`/certificate/${certificate.id}`}>View Details</Link>
                                 </Button>
                               </div>
@@ -637,4 +621,3 @@ export default function UserDashboard() {
     </DashboardLayout>
   )
 }
-
