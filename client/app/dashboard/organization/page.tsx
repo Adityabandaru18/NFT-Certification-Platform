@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { CertificateCard } from "@/components/certificate-card";
 import { Filter, Upload } from "lucide-react";
@@ -24,7 +23,6 @@ interface Certificate {
 
 
 export default function OrganizationDashboard() {
-  const [searchQuery, setSearchQuery] = useState("");
   const {getWallet} = useStore();
   const [newCertificate, setNewCertificate] = useState({
     title: "",

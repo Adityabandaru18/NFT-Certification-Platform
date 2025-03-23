@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,7 +23,8 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-
+import useStore from "@/app/store";
+import { contractProvider, contractSigner,initializeContract } from "@/app/contractTemplate"
 // Dummy user accounts for demonstration
 const dummyUsers = [
   { id: "user-001", name: "John Doe", avatar: "JD", walletAddress: "0x1a2b3c4d5e6f7g8h9i0j" },
@@ -218,6 +219,7 @@ export default function UserDashboard() {
   const [endorsementText, setEndorsementText] = useState("")
   const [endorsingCertId, setEndorsingCertId] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const {getWallet} = useStore();
 
   const filteredCertificates = certificates.filter(
     (cert) =>
@@ -236,7 +238,6 @@ export default function UserDashboard() {
       if (walletSearchResults[walletSearch]) {
         setSearchResults(walletSearchResults[walletSearch])
       } else if (walletSearch.startsWith("0x")) {
-        // Fallback for any wallet address starting with 0x
         setSearchResults([
           {
             id: "cert-generic",
@@ -259,13 +260,11 @@ export default function UserDashboard() {
   const handleEndorsement = (certId: string) => {
     if (!endorsementText.trim()) return
 
-    // Find the certificate to endorse
     const updatedResults = searchResults?.map((cert) => {
       if (cert.id === certId) {
-        // Add the new endorsement
         const newEndorsement = {
           id: `end-${Date.now()}`,
-          userId: "user-009", // Current user
+          userId: "user-009",
           name: "You",
           avatar: "YO",
           date: new Date().toLocaleDateString("en-US", {
@@ -288,19 +287,16 @@ export default function UserDashboard() {
     setEndorsementText("")
     setEndorsingCertId(null)
 
-    // Show success message
     setSuccessMessage("Your endorsement has been added successfully!")
     setTimeout(() => setSuccessMessage(null), 3000)
   }
 
   const handleQuickEndorse = (certId: string) => {
-    // Find the certificate to endorse
     const updatedResults = searchResults?.map((cert) => {
       if (cert.id === certId) {
-        // Add a quick endorsement
         const newEndorsement = {
           id: `end-${Date.now()}`,
-          userId: "user-009", // Current user
+          userId: "user-009", 
           name: "You",
           avatar: "YO",
           date: new Date().toLocaleDateString("en-US", {
@@ -321,18 +317,32 @@ export default function UserDashboard() {
 
     setSearchResults(updatedResults || null)
 
-    // Show success message
     setSuccessMessage("Certificate endorsed successfully!")
     setTimeout(() => setSuccessMessage(null), 3000)
   }
 
-  // Function to get user name from wallet address
   const getUserNameFromWallet = (wallet: string) => {
     const user = dummyUsers.find((u) => u.walletAddress === wallet)
     if (user) return user.name
 
-    // If not found, return shortened wallet address
     return `${wallet.substring(0, 6)}...${wallet.substring(wallet.length - 4)}`
+  }
+
+  useEffect( ()=>{
+     fetchCertificates();
+  });
+
+  const fetchCertificates = async () => {
+    try{
+      await initializeContract(getWallet());
+      const userCertificates = await contractProvider.getUserCertificates(getWallet());
+      console.log("User certificates",userCertificates);
+
+
+    }
+    catch(error){
+      console.log("Error fetching certificates",error);
+    }
   }
 
   return (
