@@ -29,6 +29,25 @@
 			"inputs": [
 				{
 					"indexed": true,
+					"internalType": "address",
+					"name": "owner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "issuer",
+					"type": "address"
+				}
+			],
+			"name": "CertificateMint",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
 					"internalType": "bytes32",
 					"name": "tokenId",
 					"type": "bytes32"
@@ -165,6 +184,11 @@
 			"name": "certificates",
 			"outputs": [
 				{
+					"internalType": "string",
+					"name": "name",
+					"type": "string"
+				},
+				{
 					"internalType": "address",
 					"name": "owner",
 					"type": "address"
@@ -260,6 +284,37 @@
 					"type": "address"
 				}
 			],
+			"name": "getUserDetails",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "string",
+							"name": "name",
+							"type": "string"
+						},
+						{
+							"internalType": "address",
+							"name": "walletAddress",
+							"type": "address"
+						}
+					],
+					"internalType": "struct NFTCertificatePlatform.Profile",
+					"name": "",
+					"type": "tuple"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_user",
+					"type": "address"
+				}
+			],
 			"name": "getUserEndorsements",
 			"outputs": [
 				{
@@ -280,12 +335,23 @@
 				},
 				{
 					"internalType": "string",
+					"name": "_name",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
 					"name": "_ipfsHash",
 					"type": "string"
 				}
 			],
 			"name": "mintCertificate",
-			"outputs": [],
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
@@ -445,9 +511,36 @@
 			"name": "verifyCertificate",
 			"outputs": [
 				{
-					"internalType": "bool",
+					"components": [
+						{
+							"internalType": "string",
+							"name": "name",
+							"type": "string"
+						},
+						{
+							"internalType": "address",
+							"name": "owner",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "issuer",
+							"type": "address"
+						},
+						{
+							"internalType": "string",
+							"name": "ipfsHash",
+							"type": "string"
+						},
+						{
+							"internalType": "uint256",
+							"name": "timestamp",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct NFTCertificatePlatform.Certificate",
 					"name": "",
-					"type": "bool"
+					"type": "tuple"
 				}
 			],
 			"stateMutability": "view",
