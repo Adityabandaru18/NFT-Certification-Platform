@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -7,7 +7,7 @@ import { Navbar } from "@/components/navbar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Wallet, CheckCircle, Loader2 } from "lucide-react"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { contractSigner, initializeContract } from "../contractTemplate"
 
 declare global {
@@ -52,7 +52,7 @@ export default function LoginPage() {
   const [showWaitingModal, setShowWaitingModal] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useRouter();
-  const { addWallet } = useStore();
+  // const { addWallet } = useStore();
 
   useEffect(() => {
     checkConnected();
@@ -120,7 +120,7 @@ export default function LoginPage() {
     if (accounts.includes(currentSelected)) {
       try {
         await initializeContract(currentSelected);
-        addWallet(currentSelected);
+        // addWallet(currentSelected);
 
         const Role = await contractSigner.getRole();
         console.log(Role);
@@ -139,15 +139,15 @@ export default function LoginPage() {
 
     // Navigate based on role
     if (new_role == 0) {
-      navigate("/signup");  // Stranger
+      navigate.push("/signup");  // Stranger
     } else if (new_role == 1) {
-      navigate("/user");
+      navigate.push("/user");
     } else if (new_role == 2) {
       setShowWaitingModal(true);  // VerifierPending
     } else if (new_role == 3) {
-      navigate("/verifier");  // VerifierAccepted
+      navigate.push("/verifier");  // VerifierAccepted
     } else if (new_role == 4) {
-      navigate("/admin");
+      navigate.push("/admin");
     }
   };
 
@@ -158,7 +158,7 @@ export default function LoginPage() {
     if (showWaitingModal) {
       timer = window.setTimeout(() => {
         setShowWaitingModal(false);
-        navigate('/');
+        navigate.push('/');
       }, 5000);
     }
     
@@ -204,40 +204,6 @@ export default function LoginPage() {
                         <Wallet className="h-5 w-5" />
                       )}
                       <span>{isLoading ? "Connecting..." : "Connect MetaMask"}</span>
-                    </Button>
-                    <Button variant="outline" className="flex items-center justify-center gap-2 h-14 border-border/60">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M12 2L3 7L12 12L21 7L12 2Z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M3 17L12 22L21 17"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M3 12L12 17L21 12"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span>Connect WalletConnect</span>
-                    </Button>
-                    <Button variant="outline" className="flex items-center justify-center gap-2 h-14 border-border/60">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
-                        <path d="M9 12H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        <path d="M12 9L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      </svg>
-                      <span>Connect Coinbase Wallet</span>
                     </Button>
                   </div>
                 ) : (
