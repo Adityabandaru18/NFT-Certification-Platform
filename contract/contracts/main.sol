@@ -11,6 +11,7 @@ contract NFTCertificatePlatform {
     }
 
     struct Certificate {
+        string name;
         address owner;
         address issuer;
         string ipfsHash;
@@ -27,6 +28,7 @@ contract NFTCertificatePlatform {
     event SignedUp(address indexed wallet, string name, Role role);
     event RoleAssigned(address indexed user, Role newRole);
     event RoleRevoked(address indexed user);
+    event CertificateMint(address indexed owner, address indexed issuer);
     event CertificateMinted(bytes32 indexed tokenId, address indexed owner, address indexed issuer, uint256 timestamp);
     event CertificateEndorsed(bytes32 indexed tokenId, address indexed endorser);
 
@@ -60,6 +62,11 @@ contract NFTCertificatePlatform {
         emit SignedUp(msg.sender, _name, _role);
     }
 
+    function getUserDetails(address _user) external view returns (Profile memory){
+        require(roles[msg.sender] != Role.Stranger, "User doesnot exist");
+        return profiles[_user];
+    }
+
     function assignRole(address _user, Role _newRole) external onlyAdmin {
         require(roles[_user] != Role.Admin, "Cannot modify another admin");
         roles[_user] = _newRole;
@@ -72,15 +79,16 @@ contract NFTCertificatePlatform {
         emit RoleRevoked(_user);
     }
 
-    function mintCertificate(address _owner, string memory _ipfsHash) external {
+    function mintCertificate(address _owner, string memory _name, string memory _ipfsHash) external {
         require(roles[msg.sender] == Role.Organization, "Only organizations can mint certificates");
         require(roles[_owner] == Role.User, "Recipient must be a registered user");
 
-        bytes32 tokenId = keccak256(abi.encodePacked(msg.sender, _owner, profiles[_owner].name, _ipfsHash));
+        bytes32 tokenId = keccak256(abi.encodePacked(msg.sender, _name, _owner, profiles[_owner].name, _ipfsHash));
 
         require(certificates[tokenId].owner == address(0), "Certificate already exists");
 
         certificates[tokenId] = Certificate({
+            name: _name,
             owner: _owner,
             issuer: msg.sender,
             ipfsHash: _ipfsHash,
@@ -89,7 +97,7 @@ contract NFTCertificatePlatform {
 
         certificateEndorsements[tokenId].push(msg.sender); // Auto-endorse by issuer
         userCertificates[_owner].push(tokenId);
-
+        emit CertificateMint(_owner, msg.sender);
         emit CertificateMinted(tokenId, _owner, msg.sender, block.timestamp);
     }
 
