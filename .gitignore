@@ -1,0 +1,8 @@
+/contract/.deps
+/contract/.states
+/contract/scripts/
+
+/.prettierrc.json
+/.prettierrc1.json
+
+/contract/contracts/artifacts

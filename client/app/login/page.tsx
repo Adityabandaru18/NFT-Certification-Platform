@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Wallet, CheckCircle, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useRouter } from "next/navigation"
 import { contractSigner, initializeContract } from "../contractTemplate"
+import useStore from "../store";
 
 declare global {
   interface Window {
@@ -53,7 +53,7 @@ export default function LoginPage() {
   const [showWaitingModal, setShowWaitingModal] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useRouter();
-  // const { addWallet } = useStore();
+  const { addWallet } = useStore();
 
   useEffect(() => {
     checkConnected();
@@ -126,6 +126,7 @@ export default function LoginPage() {
         console.log(Role);
         new_role = Number(Role);
         console.log("Role: ", new_role);
+        addWallet(currentSelected);
       } catch (error) {
         console.error("Error connecting with selected account:", error);
       }
@@ -142,14 +143,14 @@ export default function LoginPage() {
     if (new_role == 0) {
       navigate.push("/signup");  // Stranger
     } else if (new_role == 1) {
-      navigate.push("/user");
+      navigate.push("/dashboard/user");
     } else if (new_role == 2) {
-      setShowWaitingModal(true);  // VerifierPending
-    } else if (new_role == 3) {
-      navigate.push("/verifier");  // VerifierAccepted
-    } else if (new_role == 4) {
-      navigate.push("/admin");
+      navigate.push('/dashboard/organization') // VerifierPending
+    } 
+    else {
+      navigate.push("/signup");
     }
+    
   };
 
   // Auto-close waiting modal after 5 seconds
