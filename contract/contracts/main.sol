@@ -79,7 +79,7 @@ contract NFTCertificatePlatform {
         emit RoleRevoked(_user);
     }
 
-    function mintCertificate(address _owner, string memory _name, string memory _ipfsHash) external {
+    function mintCertificate(address _owner, string memory _name, string memory _ipfsHash) external returns (bytes32) {
         require(roles[msg.sender] == Role.Organization, "Only organizations can mint certificates");
         require(roles[_owner] == Role.User, "Recipient must be a registered user");
 
@@ -92,13 +92,14 @@ contract NFTCertificatePlatform {
             owner: _owner,
             issuer: msg.sender,
             ipfsHash: _ipfsHash,
-            timestamp: block.timestamp // ⏳ Store timestamp
+            timestamp: block.timestamp // Store timestamp
         });
 
         certificateEndorsements[tokenId].push(msg.sender); // Auto-endorse by issuer
         userCertificates[_owner].push(tokenId);
         emit CertificateMint(_owner, msg.sender);
         emit CertificateMinted(tokenId, _owner, msg.sender, block.timestamp);
+        return tokenId;
     }
 
     function endorseCertificate(bytes32 _tokenId) external {
