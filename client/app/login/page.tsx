@@ -7,7 +7,7 @@ import { Navbar } from "@/components/navbar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Wallet, CheckCircle, Loader2 } from "lucide-react"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { contractSigner, initializeContract } from "../contractTemplate"
 
 declare global {
@@ -52,7 +52,6 @@ export default function LoginPage() {
   const [showWaitingModal, setShowWaitingModal] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useRouter();
-  const { addWallet } = useStore();
 
   useEffect(() => {
     checkConnected();
@@ -120,7 +119,6 @@ export default function LoginPage() {
     if (accounts.includes(currentSelected)) {
       try {
         await initializeContract(currentSelected);
-        addWallet(currentSelected);
 
         const Role = await contractSigner.getRole();
         console.log(Role);
@@ -137,18 +135,7 @@ export default function LoginPage() {
     setIsLoading(false);
     console.log("User Role: ", new_role);
 
-    // Navigate based on role
-    if (new_role == 0) {
-      navigate("/signup");  // Stranger
-    } else if (new_role == 1) {
-      navigate("/user");
-    } else if (new_role == 2) {
-      setShowWaitingModal(true);  // VerifierPending
-    } else if (new_role == 3) {
-      navigate("/verifier");  // VerifierAccepted
-    } else if (new_role == 4) {
-      navigate("/admin");
-    }
+
   };
 
   // Auto-close waiting modal after 5 seconds
