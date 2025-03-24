@@ -63,7 +63,7 @@ contract NFTCertificatePlatform {
     }
 
     function getUserDetails(address _user) external view returns (Profile memory){
-        require(roles[msg.sender] != Role.Stranger, "User doesnot exist");
+        require(roles[_user] != Role.Stranger, "User doesnot exist");
         return profiles[_user];
     }
 
@@ -118,8 +118,12 @@ contract NFTCertificatePlatform {
         emit CertificateEndorsed(_tokenId, msg.sender);
     }
 
-    function getUserCertificates(address _user) external view returns (bytes32[] memory) {
-        return userCertificates[_user];
+    function getUserCertificates(address _user) external view returns (Certificate[] memory) {
+        Certificate[] memory certificatesTobeFetched = new Certificate[](userCertificates[_user].length);
+        for(uint i=0; i<userCertificates[_user].length; i++) {
+            certificatesTobeFetched[i] = certificates[userCertificates[_user][i]];
+        }
+        return certificatesTobeFetched;
     }
 
     function getUserEndorsements(address _user) external view returns (bytes32[] memory) {

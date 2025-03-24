@@ -52,11 +52,12 @@ export default function ValidatePage() {
         issuer: contractVerified.issuer,
         issueDate: contractVerified.issueDate
       });
-  
-      const [issuerName, fetchedEndorsements] = await Promise.all([
-        contractProvider.getUserDetails(contractVerified.issuer),
-        contractProvider.getEndorsers(tokenId)
-      ]);
+      console.log("hii");
+      console.log(contractVerified);
+      console.log(contractVerified[2]);
+      const issuerName = await contractProvider.getUserDetails(contractVerified[2]);
+      console.log(issuerName);
+      const fetchedEndorsements = await contractProvider.getEndorsers(tokenId);
   
       setissuerName(issuerName);
       setEndorsements(fetchedEndorsements);
@@ -156,7 +157,7 @@ export default function ValidatePage() {
                       <div className="md:w-1/3">
                         <div className="rounded-lg overflow-hidden border border-border/60 bg-card/30">
                           <img
-                            src="/placeholder.svg?height=400&width=300"
+                            src={`https://harlequin-giant-goose-484.mypinata.cloud/ipfs/${ipfsHash}`}
                             alt="Certificate"
                             className="w-full h-auto object-cover"
                           />
