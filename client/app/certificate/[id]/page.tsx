@@ -1,18 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Textarea } from "@/components/ui/textarea"
-import { CheckCircle, ArrowLeft, Share2 } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import { CheckCircle, ArrowLeft, Share2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export default function CertificateDetailsPage({ params }: { params: { id: string } }) {
+export default function CertificateDetailsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const [endorsements, setEndorsements] = useState([
     {
       id: "end-001",
@@ -28,14 +38,14 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
       date: "November 5, 2023",
       comment: "Impressive skills demonstrated throughout the course.",
     },
-  ])
-  const [newEndorsement, setNewEndorsement] = useState("")
+  ]);
+  const [newEndorsement, setNewEndorsement] = useState("");
 
   // Mock certificate data
   const certificate = {
     id: params.id,
-    title: "Blockchain Developer Certification",
-    issuer: "Blockchain Academy",
+    title: "Google course completion certificate",
+    issuer: "Google",
     recipient: "0x1a2b3c4d5e6f7g8h9i0j",
     issueDate: "October 15, 2023",
     image: "/1.jpg",
@@ -44,10 +54,10 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
     ipfsHash: "QmZ9...",
     description:
       "This certificate verifies that the recipient has successfully completed the Blockchain Developer course, demonstrating proficiency in smart contract development, blockchain architecture, and decentralized application design.",
-  }
+  };
 
   const handleAddEndorsement = () => {
-    if (!newEndorsement.trim()) return
+    if (!newEndorsement.trim()) return;
 
     const newEndorsementObj = {
       id: `end-${Date.now()}`,
@@ -59,11 +69,11 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
         day: "numeric",
       }),
       comment: newEndorsement,
-    }
+    };
 
-    setEndorsements([...endorsements, newEndorsementObj])
-    setNewEndorsement("")
-  }
+    setEndorsements([...endorsements, newEndorsementObj]);
+    setNewEndorsement("");
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -85,7 +95,10 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
           <Alert className="bg-green-500/10 text-green-500 border-green-500/20">
             <CheckCircle className="h-4 w-4" />
             <AlertTitle>Valid Certificate</AlertTitle>
-            <AlertDescription>This certificate has been verified on the blockchain and is authentic.</AlertDescription>
+            <AlertDescription>
+              This certificate has been verified on the blockchain and is
+              authentic.
+            </AlertDescription>
           </Alert>
 
           <Card className="border-border/60 bg-card/60 backdrop-blur">
@@ -98,15 +111,21 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
                       <img
                         src={certificate.image || "/placeholder.svg"}
                         alt={certificate.title}
-                        className="w-full h-auto object-cover"
+                        className="w-full max-h-[500px] object-contain"
                       />
                     </div>
                   </div>
                   <div className="md:w-2/3 space-y-4">
                     <div>
-                      <Badge className="mb-2 bg-gradient-to-r from-purple-500 to-blue-500">Verified</Badge>
-                      <h2 className="text-2xl font-bold">{certificate.title}</h2>
-                      <p className="text-muted-foreground">Issued on {certificate.issueDate}</p>
+                      <Badge className="mb-2 bg-gradient-to-r from-purple-500 to-blue-500">
+                        Verified
+                      </Badge>
+                      <h2 className="text-2xl font-bold">
+                        {certificate.title}
+                      </h2>
+                      <p className="text-muted-foreground">
+                        Issued on {certificate.issueDate}
+                      </p>
                     </div>
 
                     <p className="text-sm">{certificate.description}</p>
@@ -114,26 +133,36 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Issuer</span>
-                        <span className="font-medium">{certificate.issuer}</span>
+                        <span className="font-medium">
+                          {certificate.issuer}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Recipient</span>
                         <span className="font-medium">
                           {certificate.recipient.substring(0, 6)}...
-                          {certificate.recipient.substring(certificate.recipient.length - 4)}
+                          {certificate.recipient.substring(
+                            certificate.recipient.length - 4
+                          )}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Token ID</span>
-                        <span className="font-medium">{certificate.tokenId}</span>
+                        <span className="font-medium">
+                          {certificate.tokenId}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Contract</span>
-                        <span className="font-medium">{certificate.contract}</span>
+                        <span className="font-medium">
+                          {certificate.contract}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">IPFS Hash</span>
-                        <span className="font-medium">{certificate.ipfsHash}</span>
+                        <span className="font-medium">
+                          {certificate.ipfsHash}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -148,7 +177,8 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
               <CardHeader>
                 <CardTitle>Endorsements</CardTitle>
                 <CardDescription>
-                  Endorsements from peers and professionals add credibility to this certificate
+                  Endorsements from peers and professionals add credibility to
+                  this certificate
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -163,8 +193,12 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
                       </Avatar>
                       <div>
                         <div className="font-medium">{endorsement.name}</div>
-                        <div className="text-sm text-muted-foreground">Endorsed on {endorsement.date}</div>
-                        <div className="text-sm mt-1">{endorsement.comment}</div>
+                        <div className="text-sm text-muted-foreground">
+                          Endorsed on {endorsement.date}
+                        </div>
+                        <div className="text-sm mt-1">
+                          {endorsement.comment}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -193,6 +227,5 @@ export default function CertificateDetailsPage({ params }: { params: { id: strin
       </main>
       <Footer />
     </div>
-  )
+  );
 }
-

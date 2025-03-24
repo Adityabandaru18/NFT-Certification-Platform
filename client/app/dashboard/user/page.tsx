@@ -38,12 +38,11 @@ const dummyUsers = [
   { id: "user-009", name: "You", avatar: "YO", walletAddress: "0x9i0j1a2b3c4d5e6f7g8h" },
 ]
 
-// Mock data for certificates
 const certificates = [
   {
     id: "cert-001",
-    title: "Blockchain Developer Certification",
-    issuer: "Blockchain Academy",
+    title: "Google complete course",
+    issuer: "Google",
     issueDate: "2023-10-15",
     image: "/1.jpg",
     tokenId: "12345",
@@ -76,8 +75,8 @@ const certificates = [
   },
   {
     id: "cert-002",
-    title: "Smart Contract Auditor",
-    issuer: "Security Guild",
+    title: "Research paper",
+    issuer: "Research Inc.",
     issueDate: "2023-09-22",
     image: "/2.jpg",
     tokenId: "12346",
@@ -107,8 +106,8 @@ const walletSearchResults = {
   "0x1a2b3c4d5e6f7g8h9i0j": [
     {
       id: "cert-003",
-      title: "Web3 Product Manager",
-      issuer: "Product School",
+      title: "Research paper",
+      issuer: "Research Institute",
       issueDate: "2023-11-05",
       image: "/3.jpg",
       tokenId: "12347",
@@ -134,8 +133,8 @@ const walletSearchResults = {
     },
     {
       id: "cert-004",
-      title: "DeFi Fundamentals",
-      issuer: "DeFi Alliance",
+      title: "Coursera",
+      issuer: "Coursera Inc.",
       issueDate: "2023-08-30",
       image: "/4.jpg",
       tokenId: "12348",
@@ -146,8 +145,8 @@ const walletSearchResults = {
   "0x2b3c4d5e6f7g8h9i0j1a": [
     {
       id: "cert-005",
-      title: "NFT Creation Masterclass",
-      issuer: "Digital Art Academy",
+      title: "Advitya",
+      issuer: "Advitya Foundation",
       issueDate: "2023-10-10",
       image: "/5.jpg",
       tokenId: "12349",
@@ -167,8 +166,8 @@ const walletSearchResults = {
   "0x3c4d5e6f7g8h9i0j1a2b": [
     {
       id: "cert-006",
-      title: "Blockchain Architecture",
-      issuer: "Tech Institute",
+      title: "Google Certificate",
+      issuer: "Google",
       issueDate: "2023-07-15",
       image: "/1.jpg",
       tokenId: "12350",
