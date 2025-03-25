@@ -73,32 +73,7 @@ const certificates = [
       },
     ],
   },
-  {
-    id: "cert-002",
-    title: "Research paper",
-    issuer: "Research Inc.",
-    issueDate: "2023-09-22",
-    image: "/2.jpg",
-    tokenId: "12346",
-    endorsements: [
-      {
-        id: "end-004",
-        userId: "user-004",
-        name: "Emma Wilson",
-        avatar: "EW",
-        date: "September 25, 2023",
-        comment: "Your attention to detail in smart contract auditing is impressive.",
-      },
-      {
-        id: "end-005",
-        userId: "user-005",
-        name: "Michael Brown",
-        avatar: "MB",
-        date: "October 3, 2023",
-        comment: "I've worked with this person and can vouch for their auditing skills.",
-      },
-    ],
-  },
+
 ]
 
 // Wallet search results with different endorsement scenarios
@@ -240,8 +215,8 @@ export default function UserDashboard() {
         setSearchResults([
           {
             id: "cert-generic",
-            title: "Generic Blockchain Certificate",
-            issuer: "Blockchain Foundation",
+            title: "Google complete course",
+            issuer: "Google",
             issueDate: "2023-12-01",
             image: "/1.jpg",
             tokenId: "99999",
@@ -476,16 +451,7 @@ export default function UserDashboard() {
                                   <Badge className="bg-gradient-to-r from-purple-500 to-blue-500">NFT</Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground">Issued by: {certificate.issuer}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  Issued on:{" "}
-                                  {new Date(certificate.issueDate).toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  })}
-                                </p>
-                                <p className="text-sm text-muted-foreground">Token ID: {certificate.tokenId}</p>
-
+ 
                                 {certificate.endorsements.length > 0 && (
                                   <div className="mt-3">
                                     <p className="text-sm font-medium">Endorsements:</p>

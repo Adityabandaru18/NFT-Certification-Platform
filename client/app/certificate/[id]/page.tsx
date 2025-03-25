@@ -121,10 +121,10 @@ export default function CertificateDetailsPage({
                         Verified
                       </Badge>
                       <h2 className="text-2xl font-bold">
-                        {certificate.title}
+                      Google complete course
                       </h2>
                       <p className="text-muted-foreground">
-                        Issued on {certificate.issueDate}
+                        Issued on 25 March, 2025
                       </p>
                     </div>
 
@@ -137,33 +137,7 @@ export default function CertificateDetailsPage({
                           {certificate.issuer}
                         </span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Recipient</span>
-                        <span className="font-medium">
-                          {certificate.recipient.substring(0, 6)}...
-                          {certificate.recipient.substring(
-                            certificate.recipient.length - 4
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Token ID</span>
-                        <span className="font-medium">
-                          {certificate.tokenId}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Contract</span>
-                        <span className="font-medium">
-                          {certificate.contract}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">IPFS Hash</span>
-                        <span className="font-medium">
-                          {certificate.ipfsHash}
-                        </span>
-                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -225,7 +199,6 @@ export default function CertificateDetailsPage({
           </Card>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
